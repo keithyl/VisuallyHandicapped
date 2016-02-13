@@ -1,0 +1,16 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 11 Feb, 2016, 4:07:02 PM
+    Author     : Keithyl
+*/
+#map-canvas {
+    height:670px;
+    width:670px;
+    //padding-top: 100px;
+    padding-bottom: 100px;
+    margin: 0 auto 0 auto;
+}
