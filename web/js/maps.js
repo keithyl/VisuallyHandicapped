@@ -1,3 +1,5 @@
+var infoWindow = new google.maps.InfoWindow();
+ 
  function getLocation(){
 
       {
@@ -10,6 +12,8 @@
                   timeout: 5000,
                   maximumAge: 0
               };
+               
+            
 
               navigator.geolocation.watchPosition( success, error,options);
           }
@@ -36,7 +40,7 @@
 
      var mapOptions = {
            center: new google.maps.LatLng(myLocation.lat(),myLocation.lng()),
-          zoom: 19,
+          zoom: 18,
           mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
@@ -49,7 +53,10 @@
           map: map,
           title:"you are here"
       });
-
+   
+ contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span></div>';
+  infoWindow.setContent(contentString);
+    infoWindow.open(map,marker); 
   }
   
   /*setTimeout(function(){
