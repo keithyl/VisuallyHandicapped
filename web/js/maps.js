@@ -1,7 +1,9 @@
 var infoWindow = new google.maps.InfoWindow();
+var geocoder;
+var address;
  
  function getLocation(){
-
+geocoder = new google.maps.Geocoder();
       {
           if (navigator.geolocation)
 
@@ -34,9 +36,28 @@ var infoWindow = new google.maps.InfoWindow();
   function success(position) {
      var  lat  = position.coords.latitude;
      var  lng =  position.coords.longitude;
-
+var latlng = new google.maps.LatLng(lat, lng);
      var  myLocation =   new google.maps.LatLng(lat, lng);
-
+      geocoder.geocode({'latLng': latlng}, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            if (results[1]) {
+                map.setZoom(16);
+                marker = new google.maps.Marker({
+                    position: latlng,
+                    draggable: false,
+                    animation: google.maps.Animation.DROP,
+                    map: map
+                });
+            contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
+            //window.alert(results[1].formatted_address);
+            infoWindow.setContent(contentString);
+            infoWindow.open(map,marker);
+            } else {
+                alert('No results found');
+            }
+            
+        } 
+    });
 
      var mapOptions = {
            center: new google.maps.LatLng(myLocation.lat(),myLocation.lng()),
@@ -54,9 +75,9 @@ var infoWindow = new google.maps.InfoWindow();
           title:"you are here"
       });
    
- contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span></div>';
-  infoWindow.setContent(contentString);
-    infoWindow.open(map,marker); 
+ //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '<span id="addrbox>' + address + '</span></div>';
+  /*infoWindow.setContent(contentString);
+    infoWindow.open(map,marker);*/
   }
   
   /*setTimeout(function(){
