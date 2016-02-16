@@ -36,22 +36,22 @@ geocoder = new google.maps.Geocoder();
   function success(position) {
      var  lat  = position.coords.latitude;
      var  lng =  position.coords.longitude;
-var latlng = new google.maps.LatLng(lat, lng);
+     var latlng = new google.maps.LatLng(lat, lng);
      var  myLocation =   new google.maps.LatLng(lat, lng);
       geocoder.geocode({'latLng': latlng}, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             if (results[1]) {
-                map.setZoom(17);
+                map.setZoom(18);
                 marker = new google.maps.Marker({
                     position: latlng,
                     draggable: false,
-                    animation: google.maps.Animation.DROP,
+                    //animation: google.maps.Animation.DROP,
                     map: map
                 });
-            contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
+            //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
             //window.alert(results[1].formatted_address);
-            infoWindow.setContent(contentString);
-            infoWindow.open(map,marker);
+            //infoWindow.setContent(contentString);
+            //infoWindow.open(map,marker);
             } else {
                 alert('No results found');
             }
@@ -84,3 +84,5 @@ var latlng = new google.maps.LatLng(lat, lng);
    window.location.reload(1);
 },5000);*/
   google.maps.event.addDomListener(window, 'load', getLocation() );
+  
+  
