@@ -11,11 +11,13 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />        
         <link href="css/style.css" rel="stylesheet" type="text/css" media="screen" />
-        <script src="js/bootstrap.min.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js"></script>
+        <script src="js/jquery-2.2.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>      
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script src="js/maps.js"></script>
-    </head>
-    
+        
+    </head>    
+   
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
@@ -30,10 +32,15 @@ and open the template in the editor.
                 </button>
       
                 <a class="navbar-brand topnav" href="#">Visually Handicapped Bus app</a>
+               
+            </div>
+            <div>
+                 Lat/Long:<input type= "text" name = "gridbox" id = "grid" disabled>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
+                   
                     <li>
                         <a href="#about">About</a>
                     </li>
@@ -50,8 +57,6 @@ and open the template in the editor.
         <!-- /.container -->
     </nav>
     <div id="map-canvas"></div>
- 
-
 
 </body>
 </html>

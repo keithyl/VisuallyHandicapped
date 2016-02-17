@@ -1,6 +1,7 @@
-var infoWindow = new google.maps.InfoWindow();
+var infoWindow;
 var geocoder;
 var address;
+var map;
  
  function getLocation(){
 geocoder = new google.maps.Geocoder();
@@ -38,16 +39,25 @@ geocoder = new google.maps.Geocoder();
      var  lng =  position.coords.longitude;
      var latlng = new google.maps.LatLng(lat, lng);
      var  myLocation =   new google.maps.LatLng(lat, lng);
-      geocoder.geocode({'latLng': latlng}, function (results, status) {
+      document.getElementById("grid").value= myLocation.lat() + "," + myLocation.lng();
+      geocoder.geocode({'latLng': myLocation}, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             if (results[1]) {
                 map.setZoom(18);
                 marker = new google.maps.Marker({
-                    position: latlng,
+                    position: myLocation,
                     draggable: false,
                     //animation: google.maps.Animation.DROP,
                     map: map
                 });
+                    var request = {
+          location: myLocation,
+          radius: 120,
+          types: ['bus_station']
+        };
+        infowindow = new google.maps.InfoWindow();
+        service = new google.maps.places.PlacesService(map);
+        service.search(request, callback);
             //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
             //window.alert(results[1].formatted_address);
             //infoWindow.setContent(contentString);
@@ -79,6 +89,49 @@ geocoder = new google.maps.Geocoder();
   /*infoWindow.setContent(contentString);
     infoWindow.open(map,marker);*/
   }
+  function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+        }
+      }
+
+      function createMarker(place) {
+      
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+        var content='<strong style="font-size:1.2em">'+place.name+'</strong>'+
+                    '<br/><strong>Latitude:</strong>'+placeLoc.lat()+
+                    '<br/><strong>Longitude:</strong>'+placeLoc.lng()+
+                    '<br/><strong>Type:</strong>'+place.types[0]+
+                    '<br/><strong>Rating:</strong>'+(place.rating||'n/a');
+        var more_content='<img src="http://googleio2009-map.googlecode.com/svn-history/r2/trunk/app/images/loading.gif"/>';
+        
+        //make a request for further details
+        service.getDetails({reference:place.reference}, function (place, status) 
+                                    {
+                                      if (status == google.maps.places.PlacesServiceStatus.OK) 
+                                      {
+                                        more_content='<hr/><strong><a href="'+place.url+'" target="details">Details</a>';
+                                        
+                                        if(place.website)
+                                        {
+                                          more_content+='<br/><br/><strong><a href="'+place.website+'" target="details">'+place.website+'</a>';
+                                        }
+                                      }
+                                    });
+
+
+        google.maps.event.addListener(marker, 'click', function() {
+          
+          infowindow.setContent(content+more_content);
+          infowindow.open(map, this);
+        });
+      }
   
   /*setTimeout(function(){
    window.location.reload(1);
