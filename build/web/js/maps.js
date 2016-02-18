@@ -50,14 +50,7 @@ geocoder = new google.maps.Geocoder();
                     //animation: google.maps.Animation.DROP,
                     map: map
                 });
-                    var request = {
-          location: myLocation,
-          radius: 1200,
-          types: ['bus_station']
-        };
-        infowindow = new google.maps.InfoWindow();
-        service = new google.maps.places.PlacesService(map);
-        service.search(request, callback);
+      
             //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
             //window.alert(results[1].formatted_address);
             //infoWindow.setContent(contentString);

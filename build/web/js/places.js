@@ -4,6 +4,7 @@ var marker;
 var pos;
 var infowindow;
 var geocoder;
+var markersArray = new Array();
 
 function initialize() {
 geocoder = new google.maps.Geocoder();
@@ -20,6 +21,7 @@ geocoder = new google.maps.Geocoder();
     //HTML5 geolocation
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(function (position) {
+            deleteMarkers();
              var  lat  = position.coords.latitude;
      var  lng =  position.coords.longitude;
      var latlng = new google.maps.LatLng(lat, lng);
@@ -56,7 +58,7 @@ geocoder = new google.maps.Geocoder();
 
             var request = {
                 location: pos,
-                radius: 125,
+                radius: 100,
                 types: ['bus_station']
             };
 
@@ -84,6 +86,7 @@ geocoder = new google.maps.Geocoder();
     }
 
     function createMarker(place) {
+        //deleteMarkers();
         var placeLoc = place.geometry.location;
         var marker = new google.maps.Marker({
             map: map,
@@ -96,5 +99,15 @@ geocoder = new google.maps.Geocoder();
         });
 
     }
+    
+    function deleteMarkers() {
+    if (markersArray) {
+        for (i = 0; i < markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+        markersArray.length = 0;
+    }
 }
+
+    }
 google.maps.event.addDomListener(window, 'load', initialize);
