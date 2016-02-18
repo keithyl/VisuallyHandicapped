@@ -52,7 +52,7 @@ geocoder = new google.maps.Geocoder();
                 });
                     var request = {
           location: myLocation,
-          radius: 120,
+          radius: 1200,
           types: ['bus_station']
         };
         infowindow = new google.maps.InfoWindow();
