@@ -5,6 +5,7 @@ var pos;
 var infowindow;
 var geocoder;
 var markersArray = new Array();
+var gmarkers = [];
 
 function initialize() {
 geocoder = new google.maps.Geocoder();
@@ -20,16 +21,17 @@ geocoder = new google.maps.Geocoder();
 
     //HTML5 geolocation
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(function (position) {
-            deleteMarkers();
-             var  lat  = position.coords.latitude;
-     var  lng =  position.coords.longitude;
-     var latlng = new google.maps.LatLng(lat, lng);
-     var  myLocation =   new google.maps.LatLng(lat, lng);
+        navigator.geolocation.watchPosition(function (position) {            
+        var  lat  = position.coords.latitude;
+        var  lng =  position.coords.longitude;
+        var latlng = new google.maps.LatLng(lat, lng);
+        var  myLocation =   new google.maps.LatLng(lat, lng);
       //document.getElementById("grid").value= myLocation.lat() + "," + myLocation.lng();
       geocoder.geocode({'latLng': myLocation}, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             if (results[1]) {
+                //clearMarkers();
+                removeMarkers();
                 map.setZoom(18);
                 marker = new google.maps.Marker({
                     position: myLocation,
@@ -37,7 +39,7 @@ geocoder = new google.maps.Geocoder();
                     //animation: google.maps.Animation.DROP,
                     map: map
                 });
-      
+                gmarkers.push(marker);
             //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
             //window.alert(results[1].formatted_address);
             //infoWindow.setContent(contentString);
@@ -58,7 +60,7 @@ geocoder = new google.maps.Geocoder();
 
             var request = {
                 location: pos,
-                radius: 100,
+                radius: 130,
                 types: ['bus_station']
             };
 
@@ -84,13 +86,21 @@ geocoder = new google.maps.Geocoder();
             }
         }
     }
+    
+    function removeMarkers(){
+    for(i=0; i<gmarkers.length; i++){
+        gmarkers[i].setMap(null);
+    }
+}
 
     function createMarker(place) {
         //deleteMarkers();
         var placeLoc = place.geometry.location;
+        var image = 'images/busstop.png';
         var marker = new google.maps.Marker({
             map: map,
-            position: place.geometry.location
+            position: place.geometry.location,
+            icon: image
         });
 
         google.maps.event.addListener(marker, 'click', function () {
