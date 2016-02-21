@@ -16,7 +16,7 @@ $.getJSON(busRoute31, function (data) {
                     //animation: google.maps.Animation.DROP,
                     map: map
                 });
-      console.log(latlong);
+      //console.log(latlong);
       });
 
 });
