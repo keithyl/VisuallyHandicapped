@@ -60,7 +60,7 @@ geocoder = new google.maps.Geocoder();
 
             var request = {
                 location: pos,
-                radius: 130,
+                radius: 140,
                 types: ['bus_station']
             };
 
@@ -88,15 +88,37 @@ geocoder = new google.maps.Geocoder();
     }
     
     function removeMarkers(){
-    for(i=0; i<gmarkers.length; i++){
-        gmarkers[i].setMap(null);
-    }
-}
+        for(i=0; i<gmarkers.length; i++){
+            gmarkers[i].setMap(null);
+        }
+    }   
 
     function createMarker(place) {
         //deleteMarkers();
+        var stopID;
+        var busstopID;
         var placeLoc = place.geometry.location;
-        var image = 'images/busstop.png';
+        //console.log("Place location: " + place.place_id);
+        //console.log(url2);
+        var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + place.place_id + ".json";
+
+        $.getJSON(url2, function(data) {
+          stopID = data.stopId;
+          console.log("stopID " + stopID);
+          busstopID = "https://intelbus.herokuapp.com/?" + stopID;
+            $.getJSON(busstopID, function (test) {
+    
+            $.each(test, function(j) {
+               var busTiming = test[j].duration;
+               //console.log("bus time: " + busTiming);
+            });
+        });
+        });
+        
+        //console.log(busstopID);
+       
+        
+        var image = 'images/nearestbuses.png';
         var marker = new google.maps.Marker({
             map: map,
             position: place.geometry.location,
@@ -109,7 +131,7 @@ geocoder = new google.maps.Geocoder();
         });
 
     }
-    
+   
     function deleteMarkers() {
     if (markersArray) {
         for (i = 0; i < markersArray.length; i++) {
