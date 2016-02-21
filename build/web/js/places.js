@@ -31,7 +31,7 @@ geocoder = new google.maps.Geocoder();
         if (status == google.maps.GeocoderStatus.OK) {
             if (results[1]) {
                 //clearMarkers();
-                removeMarkers();
+                removeMarkers(); 
                 map.setZoom(18);
                 marker = new google.maps.Marker({
                     position: myLocation,

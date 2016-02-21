@@ -5,14 +5,19 @@
  */
 var busRoute31 = "https://busservices.firebaseio.com/31/route1/stopsById.json";
 
-$.getJSON(busRoute31, function (json) {
-
-    // Set the variables from the results array
-   
-    console.log(json);
-    var obj = JSON.parse(json);
+$.getJSON(busRoute31, function (data) {
     
-    //console.log("object: " + obj);
+    $.each(data, function(i) {
+      var latlong = data[i].lat + ', ' + data[i].lng;
+       var  myLocation =   new google.maps.LatLng(data[i].lat, data[i].lng );
+       marker = new google.maps.Marker({
+                    position: myLocation,
+                    draggable: false,
+                    //animation: google.maps.Animation.DROP,
+                    map: map
+                });
+      console.log(latlong);
+      });
 
 });
 
