@@ -24,18 +24,18 @@ $.getJSON(busRoute31, function (data) {
      });
 
 });
-
+/*
 $.getJSON(test, function (data) {
     
     $.each(data, function(i) {
-      var timing = data[i].duration;
+      var timing = data[i].nextBus.duration;
       
      console.log("TIMING: " + timing);
       //console.log(latlong);
      });
 
 });
-
+*/
 
 /*
 $.getJSON(bus166Time, function(data){

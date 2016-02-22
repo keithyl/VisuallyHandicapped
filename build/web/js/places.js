@@ -99,25 +99,25 @@ geocoder = new google.maps.Geocoder();
         var busstopID;
         var placeLoc = place.geometry.location;
         //console.log("Place location: " + place.place_id);
-        //console.log(url2);
+        console.log(place.name);
         var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + place.place_id + ".json";
 
         $.getJSON(url2, function(data) {
           stopID = data.stopId;
-          console.log("stopID " + stopID);
-          busstopID = "https://intelbus.herokuapp.com/?" + stopID;
-            $.getJSON(busstopID, function (test) {
+          //console.log("stopID " + stopID);
+          busstopID = "https://intelbus.herokuapp.com/?id=" + stopID;
+          //console.log(busstopID);
+          
+            $.getJSON(busstopID, function (busData) {
     
-            $.each(test, function(j) {
-               var busTiming = test[j].duration;
-               //console.log("bus time: " + busTiming);
+            $.each(busData, function(i) {
+               console.log("DATA " + busData.services[i].nextBus.duration);
+               var busTiming = busData[i].nextBus;
+               console.log("bus time: " + busTiming);
             });
         });
         });
-        
-        //console.log(busstopID);
-       
-        
+   
         var image = 'images/nearestbuses.png';
         var marker = new google.maps.Marker({
             map: map,
