@@ -101,21 +101,23 @@ geocoder = new google.maps.Geocoder();
         //console.log("Place location: " + place.place_id);
         console.log(place.name);
         var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + place.place_id + ".json";
-
+       
         $.getJSON(url2, function(data) {
-          stopID = data.stopId;
-          //console.log("stopID " + stopID);
-          busstopID = "https://intelbus.herokuapp.com/?id=" + stopID;
-          //console.log(busstopID);
-          
-            $.getJSON(busstopID, function (busData) {
-    
-            $.each(busData, function(i) {
-               console.log("DATA " + busData.services[i].nextBus.duration);
-               var busTiming = busData[i].nextBus;
-               console.log("bus time: " + busTiming);
+            stopID = data.stopId;
+            //console.log("stopID " + stopID);
+            busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID;
+            //console.log(busstopID);
+            $.getJSON(busTimingUrl, function(busData) {
+                $.each(busData, function(i) {
+                    console.log("DATA " + busData[i].nextBus.duration);
+                    
+                    var nextBusTiming = busData[i].nextBus.duration;
+                    var bus2Timing = busData[i].subsequentBus.duration;
+                    var bus3Timing = busData[i].subsequentBus3.duration;
+                    
+                    console.log("bus time: " + nextBusTiming);
+                });
             });
-        });
         });
    
         var image = 'images/nearestbuses.png';
@@ -133,13 +135,13 @@ geocoder = new google.maps.Geocoder();
     }
    
     function deleteMarkers() {
-    if (markersArray) {
-        for (i = 0; i < markersArray.length; i++) {
-            markersArray[i].setMap(null);
+        if (markersArray) {
+            for (i = 0; i < markersArray.length; i++) {
+                markersArray[i].setMap(null);
+            }
+            markersArray.length = 0;
         }
-        markersArray.length = 0;
     }
-}
 
     }
 google.maps.event.addDomListener(window, 'load', initialize);
