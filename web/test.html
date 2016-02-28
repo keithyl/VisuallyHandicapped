@@ -14,48 +14,69 @@ and open the template in the editor.
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
         <script src="js/jquery-2.2.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>       
-         <script src="js/places.js"></script>
-         <script src="js/jquery-2.2.0.min.js"></script>
-          <script src="js/parseJSON.js"></script>
+        <script src="js/places.js"></script>
+        <script src="js/jquery-2.2.0.min.js"></script>
+        <script src="js/parseJSON.js"></script>
     </head>
     <body>
-              <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
-        <div class="container topnav">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-      
-                <a class="navbar-brand topnav" href="#">Visually Handicapped Bus app</a>
-               
+        <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+            <div class="container topnav">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand topnav" href="#">Visually Handicapped Bus app</a>
+                </div>
+                <!--
+                <div>
+                     Lat/Long:<input type= "text" name = "gridbox" id = "grid" disabled>
+                </div>-->
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#about">About</a>
+                        </li>
+                        <li>
+                            <a href="#services">Settings</a>
+                        </li>
+                        <li>
+                            <a href="#contact">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
             </div>
-            <!--
-            <div>
-                 Lat/Long:<input type= "text" name = "gridbox" id = "grid" disabled>
-            </div>-->
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                   
-                    <li>
-                        <a href="#about">About</a>
-                    </li>
-                    <li>
-                        <a href="#services">Settings</a>
-                    </li>
-                    <li>
-                        <a href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+            <!-- /.container -->
+        </nav>
+        <
+        <div id="map-canvas"></div>
+        <div class="table-responsive">
+            <table class="table table-hover" id="busTiming" style="width:50%; margin: 20px auto 0 auto">
+                <thead>
+                    <tr>
+                        <th id="busStopName" colspan="3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Service Number</th>
+                        <th>Next Bus Duration</th>
+                        <th>Subsequent Bus Duration</th>
+                       <!--<th>3rd Bus Duration</th>-->
+                    </tr>
+                    <tr id="busArrival">
+                        <td id="serviceNo">147</td>
+                        <td id="Duration1"></td>
+                        <td id="Duration2"></td>
+                        <!--<td id="Duration3"></td>-->
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <!-- /.container -->
-    </nav>
-    <div id="map-canvas"></div>
     </body>
 </html>

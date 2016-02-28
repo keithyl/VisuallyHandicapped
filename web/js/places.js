@@ -8,7 +8,7 @@ var markersArray = new Array();
 var gmarkers = [];
 
 function initialize() {
-geocoder = new google.maps.Geocoder();
+    geocoder = new google.maps.Geocoder();
     var mapOptions = {
         zoom: 18,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -21,46 +21,46 @@ geocoder = new google.maps.Geocoder();
 
     //HTML5 geolocation
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(function (position) {            
-        var  lat  = position.coords.latitude;
-        var  lng =  position.coords.longitude;
-        var latlng = new google.maps.LatLng(lat, lng);
-        var  myLocation =   new google.maps.LatLng(lat, lng);
-      //document.getElementById("grid").value= myLocation.lat() + "," + myLocation.lng();
-      geocoder.geocode({'latLng': myLocation}, function (results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            if (results[1]) {
-                //clearMarkers();
-                removeMarkers(); 
-                map.setZoom(18);
-                marker = new google.maps.Marker({
-                    position: myLocation,
-                    draggable: false,
-                    //animation: google.maps.Animation.DROP,
-                    map: map
-                });
-                gmarkers.push(marker);
-            //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
-            //window.alert(results[1].formatted_address);
-            //infoWindow.setContent(contentString);
-            //infoWindow.open(map,marker);
-            } else {
-                alert('No results found');
-            }
-            
-        } 
-    });
+        navigator.geolocation.watchPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var latlng = new google.maps.LatLng(lat, lng);
+            var myLocation = new google.maps.LatLng(lat, lng);
+            //document.getElementById("grid").value= myLocation.lat() + "," + myLocation.lng();
+            geocoder.geocode({'latLng': myLocation}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        //clearMarkers();
+                        removeMarkers();
+                        map.setZoom(18);
+                        marker = new google.maps.Marker({
+                            position: myLocation,
+                            draggable: false,
+                            //animation: google.maps.Animation.DROP,
+                            map: map
+                        });
+                        gmarkers.push(marker);
+                        //contentString = '<div id="iwContent">Lat: <span id="latbox">' + myLocation.lat() + '</span><br />Lng: <span id="lngbox">' + myLocation.lng() + '</span><br/><span id="addrbox">' + results[1].formatted_address + '</span></div>';
+                        //window.alert(results[1].formatted_address);
+                        //infoWindow.setContent(contentString);
+                        //infoWindow.open(map,marker);
+                    } else {
+                        alert('No results found');
+                    }
+
+                }
+            });
             pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             /*
-            infowindow = new google.maps.InfoWindow({
-                map: map,
-                position: pos,
-                content: 'You Are Here'
-            });*/
+             infowindow = new google.maps.InfoWindow({
+             map: map,
+             position: pos,
+             content: 'You Are Here'
+             });*/
 
             var request = {
                 location: pos,
-                radius: 140,
+                radius: 100,
                 types: ['bus_station']
             };
 
@@ -71,10 +71,9 @@ geocoder = new google.maps.Geocoder();
             service.nearbySearch(request, callback);
 
         },
-
-        function () {
-            handleNoGeolocation(true);
-        });
+                function() {
+                    handleNoGeolocation(true);
+                });
     } else {
         handleNoGeolocation(false);
     }
@@ -86,12 +85,12 @@ geocoder = new google.maps.Geocoder();
             }
         }
     }
-    
-    function removeMarkers(){
-        for(i=0; i<gmarkers.length; i++){
+
+    function removeMarkers() {
+        for (i = 0; i < gmarkers.length; i++) {
             gmarkers[i].setMap(null);
         }
-    }   
+    }
 
     function createMarker(place) {
         //deleteMarkers();
@@ -100,26 +99,28 @@ geocoder = new google.maps.Geocoder();
         var placeLoc = place.geometry.location;
         //console.log("Place location: " + place.place_id);
         console.log(place.name);
+        
+        getBusArrival(place.place_id);
+        
+        /*
         var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + place.place_id + ".json";
-       
+
         $.getJSON(url2, function(data) {
             stopID = data.stopId;
-            //console.log("stopID " + stopID);
             busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID;
-            //console.log(busstopID);
             $.getJSON(busTimingUrl, function(busData) {
                 $.each(busData, function(i) {
-                    console.log("DATA " + busData[i].nextBus.duration);
-                    
+                    //console.log("DATA " + busData[i].nextBus.duration);
+
                     var nextBusTiming = busData[i].nextBus.duration;
                     var bus2Timing = busData[i].subsequentBus.duration;
                     var bus3Timing = busData[i].subsequentBus3.duration;
-                    
-                    console.log("bus time: " + nextBusTiming);
+
+                    //console.log("bus time: " + nextBusTiming);
                 });
             });
-        });
-   
+        });*/
+
         var image = 'images/nearestbuses.png';
         var marker = new google.maps.Marker({
             map: map,
@@ -127,13 +128,13 @@ geocoder = new google.maps.Geocoder();
             icon: image
         });
 
-        google.maps.event.addListener(marker, 'click', function () {
+        google.maps.event.addListener(marker, 'click', function() {
             infowindow.setContent(place.name);
             infowindow.open(map, this);
         });
 
     }
-   
+
     function deleteMarkers() {
         if (markersArray) {
             for (i = 0; i < markersArray.length; i++) {
@@ -142,6 +143,25 @@ geocoder = new google.maps.Geocoder();
             markersArray.length = 0;
         }
     }
-
+    
+    function getBusArrival(placeID) {
+        var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + placeID + ".json";
+        
+        // variables for testing
+        var serviceNo = '147';
+        
+        $.getJSON(url2, function(data) {
+            $('#busStopName').html(data.name + ' (' + data.stopId + ')');
+            stopID = data.stopId;
+            busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID + "&serviceNo=" + serviceNo;
+            
+            $.getJSON(busTimingUrl, function(busData) {
+                $('#Duration1').html(busData[0].nextBus.duration);
+                $('#Duration2').html(busData[0].subsequentBus.duration);
+                //$('#Duration3').html(busData[0].subsequentBus3.duration);
+            });
+        });
     }
+
+}
 google.maps.event.addDomListener(window, 'load', initialize);
