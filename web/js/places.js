@@ -79,10 +79,10 @@ function initialize() {
     }
 
     function callback(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-            for (var i = 0; i < results.length; i++) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            //for (var i = 0; i < results.length; i++) {
                 createMarker(results[i]);
-            }
+            //}
         }
     }
 
@@ -94,32 +94,12 @@ function initialize() {
 
     function createMarker(place) {
         //deleteMarkers();
-        var stopID;
-        var busstopID;
-        var placeLoc = place.geometry.location;
+        //var busstopID;
+        //var placeLoc = place.geometry.location;
         //console.log("Place location: " + place.place_id);
-        console.log(place.name);
+        //console.log(place.name);
         
         getBusArrival(place.place_id);
-        
-        /*
-        var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + place.place_id + ".json";
-
-        $.getJSON(url2, function(data) {
-            stopID = data.stopId;
-            busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID;
-            $.getJSON(busTimingUrl, function(busData) {
-                $.each(busData, function(i) {
-                    //console.log("DATA " + busData[i].nextBus.duration);
-
-                    var nextBusTiming = busData[i].nextBus.duration;
-                    var bus2Timing = busData[i].subsequentBus.duration;
-                    var bus3Timing = busData[i].subsequentBus3.duration;
-
-                    //console.log("bus time: " + nextBusTiming);
-                });
-            });
-        });*/
 
         var image = 'images/nearestbuses.png';
         var marker = new google.maps.Marker({
@@ -145,19 +125,20 @@ function initialize() {
     }
     
     function getBusArrival(placeID) {
-        var url2 = "https://busservices.firebaseio.com/stopsPlaceId/" + placeID + ".json";
+        var url= "https://busservices.firebaseio.com/stopsPlaceId/" + placeID + ".json";
         
-        // variables for testing
-        var serviceNo = '147';
-        
-        $.getJSON(url2, function(data) {
+        $.getJSON(url, function(data) {
             $('#busStopName').html(data.name + ' (' + data.stopId + ')');
-            stopID = data.stopId;
-            busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID + "&serviceNo=" + serviceNo;
-            
+            var stopID = data.stopId;            
+            var serviceNo = $('#serviceNo').html();
+            var busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID + "&serviceNo=" + serviceNo;
             $.getJSON(busTimingUrl, function(busData) {
-                $('#Duration1').html(busData[0].nextBus.duration);
-                $('#Duration2').html(busData[0].subsequentBus.duration);
+                if (busData[0].nextBus.duration === 'Arriving') {
+                    $('#Duration1').html(busData[0].nextBus.duration);
+                } else {
+                    $('#Duration1').html(busData[0].nextBus.duration + ' Mins');
+                }
+                $('#Duration2').html(busData[0].subsequentBus.duration + ' Mins');
                 //$('#Duration3').html(busData[0].subsequentBus3.duration);
             });
         });
