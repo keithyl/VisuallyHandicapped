@@ -8,12 +8,12 @@ var markersArray = new Array();
 var gmarkers = [];
 var hasBoarded = false;
 var shakeDetected = false;
-var serviceNo;
+var serviceNo, stopID, sequenceNo, busStopName;
 
 function initialize() {
     geocoder = new google.maps.Geocoder();
     var mapOptions = {
-        zoom: 18,
+        zoom: 17,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         panControl: false,
         streetViewControl: false,
@@ -93,7 +93,7 @@ function initialize() {
 
                 var request = {
                     location: pos,
-                    radius: 150,
+                    radius: 100,
                     types: ['bus_station']
                 };
 
@@ -158,8 +158,9 @@ function initialize() {
         
         console.log(url);
         $.getJSON(url, function(data) {
-            $('#busStopName').html(data.name + ' (' + data.stopId + ')');
-            var stopID = data.stopId;            
+            busStopName = data.name;
+            $('#busStopName').html(busStopName + ' (' + data.stopId + ')');
+            stopID = data.stopId;            
             serviceNo = $('#serviceNo').html();
             var busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID + "&serviceNo=" + serviceNo;
             console.log(busTimingUrl);
@@ -177,34 +178,101 @@ function initialize() {
                 }
                 //$('#Duration3').html(busData[0].subsequentBus3.duration);
             });
+
+            highlightRoute();
+        });
+    }
+
+    function highlightRoute() {
+        // hardcoded 147 route to highlight route on map
+        $.getJSON('147route.json', function(routes) {
+            var polyline = new google.maps.Polyline({
+                clickable: false,
+                strokeColor: '#f01b48',
+                strokeWeight: 8,
+                strokeOpacity: .8
+            });
+
+            var latlngs = [];
+            var currentStop = false;
+            for (var i=0, l=routes.length; i<l; i++){
+                var coord = routes[i];
+                //hardcode to indicate starting position at SMU SOA bus stop
+                if (coord === '1.2962224,103.8496698' || currentStop) {
+                    currentStop=true;
+                    var latlng = coord.split(',');
+                    var position = new google.maps.LatLng(parseFloat(latlng[0], 10), parseFloat(latlng[1], 10));
+                    latlngs.push(position);
+                }
+            }
+            polyline.setPath(latlngs);
+            polyline.setMap(map);
         });
     }
 
     // BOARDED BUS double click event
     $('body').dblclick(function() {
-        //window.alert('aaa');
-        
         hasBoarded = true;
-       // callGeolocation();
-       getBusStopInfo();
+        // callGeolocation();
 
+        if (!shakeDetected) {
+            // find boarding bus stop sequence number
+            $.getJSON('https://busservices.firebaseio.com/147/route2/stops.json', function(data) {
+                $.each(data, function(i) {
+                    if(data[i].stopId === stopID) {
+                        sequenceNo = i;
+                    }
+                });
+                sequenceNo++;
+
+                //remove table with bus arrival info
+                $('#busTiming').remove();
+
+                //add table to display next bus stop name
+                $('.table-responsive').append('<table class="table table-hover" id="busStopName">\n\
+                                            <tr><th width=15%>' + "Bus Onboard: " + '</th><td>' + serviceNo + '</td></tr>\n\
+                                            <tr id="nextBusStop"><th>' + "Next Bus Stop: " + '</th><td id="nextBusStopCol"></td></tr>\n\
+                                            </table>');
+                getBusStopInfo();
+                sequenceNo++;
+            });
+            
+            simulateMovingBus();
+        }
     });
     
-    function getBusStopInfo() {
-        //remove table with bus arrival info
-        $('#busTiming').remove();
-        
-        //get next bus stop name from firebase
-               /* $.getJSON('', function(data) {
+    function simulateMovingBus() {
+        //simulate moving bus by adding timeout of 5 seconds for each increment
+        setTimeout(function () {    
+            // get next bus stop name
+            getBusStopInfo();
+            sequenceNo++;
             
-        });*/
-        
-        //add table containing next bus stop name
-        if (! $('#busStopName').length) {
-            $('.table-responsive').append('<table class="table table-hover" id="busStopName">\n\
-                                            <tr><th width=15%>' + "Bus Onboard: " + '</th><td>' + serviceNo + '</td></tr>\n\
-                                            <tr id="nextBusStop"><th>' + "Next Bus Stop: " + '</th><td>SMU</td></tr></table>');
-        }
+            // for mobile detecting shake event
+            if (!shakeDetected) {
+                simulateMovingBus();
+            }
+
+
+            // for testing on laptop to stop loop - shake detected
+            if (sequenceNo === 37) {
+                shakeDetected = true;
+            }               
+        }, 5000)
+    }
+
+    function getBusStopInfo() {
+        //get next bus stop name
+        var busStopInfoUrl = 'https://busservices.firebaseio.com/147/route2/stops/' + sequenceNo + '.json';
+        $.getJSON(busStopInfoUrl, function(data) {
+            var nextBusStop = data.name;
+            console.log(nextBusStop);
+            $('#nextBusStopCol').html(nextBusStop);
+
+            //test for auto play next bus stop name
+            var text = $('#nextBusStop').text();
+            responsiveVoice.speak(text); 
+        });
     }
     
     // tap once to play bus stop name after onboard the bus
