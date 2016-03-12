@@ -224,8 +224,9 @@ function initialize() {
     window.addEventListener('shake', function(){
         shakeDetected = true;
         if (hasBoarded && shakeDetected) {
-            alert('SHAKE DETECTED ALIGHTED');
+           // alert('SHAKE DETECTED ALIGHTED');
             
+            responsiveVoice.speak('Shake detected. Tap twice to confirm alighting from the bus');
             // play message - confirm alight, tap once for no, tap twice for yes
             $('body').dblclick(function() {
                //alert('CONFIRM ALIGHTED');
