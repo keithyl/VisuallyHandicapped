@@ -153,6 +153,11 @@ function initialize() {
         }
     }
     
+    function myFunction() {
+        //add in vibration function here
+        //alert('Hello');        
+    }
+    
     function getBusArrival(placeID) {
         var url= "https://busservices.firebaseio.com/stopsPlaceId/" + placeID + ".json";
         
@@ -166,6 +171,9 @@ function initialize() {
             console.log(busTimingUrl);
             $.getJSON(busTimingUrl, function(busData) {
                 if (busData[0].nextBus.duration === 'Arriving') {
+                    setTimeout(myFunction, 5000);
+                    //voice here to read have you boarded the bus?
+                    //capture voice input from user: i have boarded the bus
                     $('#Duration1').html(busData[0].nextBus.duration);
                 } else {
                     $('#Duration1').html(busData[0].nextBus.duration + ' Mins');
@@ -292,7 +300,7 @@ function initialize() {
     window.addEventListener('shake', function(){
         shakeDetected = true;
         if (hasBoarded && shakeDetected) {
-           // alert('SHAKE DETECTED ALIGHTED');
+            //alert('SHAKE DETECTED ALIGHTED');
             
             responsiveVoice.speak('Shake detected. Tap twice to confirm alighting from the bus');
             // play message - confirm alight, tap once for no, tap twice for yes
