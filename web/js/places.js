@@ -93,7 +93,7 @@ function initialize() {
 
                 var request = {
                     location: pos,
-                    radius: 100,
+                    radius: 150,
                     types: ['bus_station']
                 };
 
@@ -101,6 +101,7 @@ function initialize() {
 
                 infowindow = new google.maps.InfoWindow();
                 var service = new google.maps.places.PlacesService(map);
+                
                 service.nearbySearch(request, callback);
             }, function() {
                 handleNoGeolocation(true);
@@ -164,16 +165,20 @@ function initialize() {
         console.log(url);
         $.getJSON(url, function(data) {
             busStopName = data.name;
-            $('#busStopName').html(busStopName + ' (' + data.stopId + ')');
-            stopID = data.stopId;            
+            stopID = data.stopId; 
+            $('#busStopName').html(busStopName + ' (' + data.stopId + ')');           
             serviceNo = $('#serviceNo').html();
             var busTimingUrl = "https://intelbus.herokuapp.com/?id=" + stopID + "&serviceNo=" + serviceNo;
             console.log(busTimingUrl);
             $.getJSON(busTimingUrl, function(busData) {
-                if (busData[0].nextBus.duration === 'Arriving') {
+                if (busData[0].nextBus.duration === 'Arriving'){
+                    responsiveVoice.speak("Your bus is arriving");                    
                     setTimeout(myFunction, 5000);
+                   
                     //voice here to read have you boarded the bus?
-                    //capture voice input from user: i have boarded the bus
+                     responsiveVoice.speak("Have you boarded the bus? Double tap to confirm.");  
+                  
+                   
                     $('#Duration1').html(busData[0].nextBus.duration);
                 } else {
                     $('#Duration1').html(busData[0].nextBus.duration + ' Mins');
@@ -255,6 +260,8 @@ function initialize() {
             // get next bus stop name
             getBusStopInfo();
             sequenceNo++;
+          
+            
             
             // for mobile detecting shake event
             if (!shakeDetected) {
@@ -266,8 +273,36 @@ function initialize() {
             if (sequenceNo === 37) {
                 shakeDetected = true;
             }               
-        }, 5000)
+        }, 10000)
     }
+    
+            // eventlistener for shake event to indicate alighting
+            var shakeEvent = new Shake({threshold: 15});
+            shakeEvent.start();
+            window.addEventListener('shake', function () {
+                shakeDetected = true;
+                if (hasBoarded && shakeDetected) {
+                    //alert('SHAKE DETECTED ALIGHTED');
+
+                    responsiveVoice.speak('Shake detected. Tap twice to confirm alighting from the bus');
+                 
+                    // play message - confirm alight, tap once for no, tap twice for yes
+                    $('body').dblclick(function () {
+                        //alert('CONFIRM ALIGHTED');
+
+                        responsiveVoice.speak('You have alighted. To end, please close this application. To board another bus, please tap the screen after the vibration.');
+                        if(responsiveVoice.isPlaying()) {
+                             responsiveVoice.cancel();
+                        }
+                        //redirect to main page
+                        setTimeout(function () {   
+                           
+                            window.location.replace("test.html");
+                        }, 3000);
+                    });
+                }
+            }, false);  
+    
 
     function getBusStopInfo() {
         //get next bus stop name
@@ -276,10 +311,14 @@ function initialize() {
             var nextBusStop = data.name;
             console.log(nextBusStop);
             $('#nextBusStopCol').html(nextBusStop);
-
+            //if (navigator.vibrate) {
+              //  navigator.vibrate(1000);
+            //}
             //test for auto play next bus stop name
-            var text = $('#nextBusStop').text();
-            responsiveVoice.speak(text); 
+           var text = $('#nextBusStop').text();
+           if (shakeDetected === false) {
+            responsiveVoice.speak(text);
+           }
         });
     }
     
@@ -294,25 +333,6 @@ function initialize() {
         }
     });
     
-    // eventlistener for shake event to indicate alighting
-    var shakeEvent = new Shake({threshold: 15});
-    shakeEvent.start();
-    window.addEventListener('shake', function(){
-        shakeDetected = true;
-        if (hasBoarded && shakeDetected) {
-            //alert('SHAKE DETECTED ALIGHTED');
-            
-            responsiveVoice.speak('Shake detected. Tap twice to confirm alighting from the bus');
-            // play message - confirm alight, tap once for no, tap twice for yes
-            $('body').dblclick(function() {
-               //alert('CONFIRM ALIGHTED');
 
-               responsiveVoice.speak('You have alighted from the bus');
-               
-               //redirect to main page
-               window.location.replace(window.location.href);
-            });
-        }
-    }, false);
 }
 google.maps.event.addDomListener(window, 'load', initialize);
